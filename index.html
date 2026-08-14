@@ -116,15 +116,43 @@
             container.innerHTML = '';
             
             data.forEach(item => {
-                total += item.price;
-                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${item.price.toFixed(2)}</span></div>`;
+                let qty = item.quantity || 1;
+                let linePrice = 0;
+                let specialText = '';
+
+                // Check if a multi-buy special applies (e.g. Offer Qty = 2, Offer Total = 5.00)
+                if (item.offerQty && item.offerTotal && qty >= item.offerQty) {
+                    let sets = Math.floor(qty / item.offerQty);
+                    let remainder = qty % item.offerQty;
+                    linePrice = (sets * item.offerTotal) + (remainder * item.price);
+                    specialText = `<div class="line" style="font-size: 11px; color: #555;">  SPECIAL: ${item.offerQty} for $${item.offerTotal.toFixed(2)}</div>`;
+                } else {
+                    linePrice = qty * item.price;
+                }
+
+                total += linePrice;
+
+                // Format display name and quantity layout
+                let displayName = item.taxable === 'Y' || item.taxable === true ? item.name + '%' : item.name;
+                let qtyPrefix = qty > 1 ? `${qty} @ ` : '';
+                let unitOrLinePrice = qty > 1 ? `${item.price.toFixed(2)} each` : '';
+
+                container.innerHTML += `
+                    <div>
+                        <div class="flex line">
+                            <span>${qty > 1 ? qty + ' x ' : ''}${displayName}</span>
+                            <span>$${linePrice.toFixed(2)}</span>
+                        </div>
+                        ${qty > 1 ? `<div class="line" style="font-size: 11px; color: #555;">  ${qtyPrefix}${(item.price).toFixed(2)}</div>` : ''}
+                        ${specialText}
+                    </div>`;
             });
             
             document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
             document.getElementById('card-total').innerText = 'AUD$ ' + total.toFixed(2);
-            document.getElementById('item-count-label').innerText = `Total for ${data.length} item${data.length === 1 ? '' : 's'}:`;
+            document.getElementById('item-count-label').innerText = `Total for ${data.length} items:`;
         } catch(e) { 
             document.getElementById('items-box').innerHTML = 'Error loading items'; 
         }
