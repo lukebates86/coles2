@@ -1,595 +1,135 @@
-<!-- PATCHED VERSION WITH ALL FIXES APPLIED -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-
-<!-- Cache busting -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<script>document.write('<meta name="x-version" content="1.0.7">');</script>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Digital Receipt</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
-
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-    background: #dcdcdc;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 10px;
-}
-
-.receipt {
-    width: 100%;
-    max-width: 330px;
-    background: #fff;
-    padding: 20px;
-    margin: 0 auto;
-    box-shadow: 0 0 15px rgba(0,0,0,0.15);
-    letter-spacing: 0.5px;
-    color: #000;
-}
-
-.line {
-    font-size: 13px;
-    line-height: 1.15;
-    margin: 2px 0;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.flex span:first-child {
-    flex: 1;
-    padding-right: 14px;
-    min-width: 0;
-}
-
-.flex span:last-child {
-    min-width: 70px;
-    text-align: right;
-    flex-shrink: 0;
-}
-
-.hr {
-    border-bottom: 2px solid #000;
-    margin: 12px 0;
-}
-
-.hr-dashed {
-    border-bottom: 1px dashed #000;
-    margin: 12px 0;
-}
-
-.logo {
-    font-size: 52px;
-    font-weight: 700;
-    text-align: center;
-    color: #e31837;
-    margin: 6px 0 14px 0;
-    letter-spacing: -1.5px;
-}
-
-.header-bar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: #fff;
-    padding: 15px 20px;
-    margin: -20px -20px 20px -20px;
-    border-bottom: 2px solid #dcdcdc;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-}
-
-.header-icon {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-    cursor: pointer;
-}
-
-.header-top {
-    letter-spacing: 0.45px;
-}
-
-.header-block {
-    letter-spacing: 0.45px;
-}
-
-.header-block .line {
-    margin: 4px 0;
-}
-
-.header-block .line:nth-child(4) {
-    margin-bottom: 8px;
-}
-
-.header-block .line:nth-child(6) {
-    margin-top: 6px;
-}
-
-.item-code {
-    font-size: 11px;
-    opacity: 0.65;
-    margin-top: -1px;
-    margin-bottom: 3px;
-    padding-left: 2px;
-}
-
-.discount-line {
-    font-weight: 700;
-    font-size: 13px;
-    margin: 2px 0;
-}
-
-.totals-total {
-    font-weight: 700;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-.taxable-banner {
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 2px;
-}
-
-.savings-stars {
-    text-align: center;
-    font-size: 17px;
-    font-weight: 800;
-    margin: 0;
-}
-
-.savings-line {
-    display: flex;
-    justify-content: space-between;
-    font-size: 20px;
-    font-weight: 800;
-    margin: 2px 0;
-    padding: 0 4px;
-}
-
-.savings-note {
-    text-align: center;
-    font-size: 11px;
-    opacity: 0.75;
-    margin: 6px 0 10px 0;
-}
-
-.tax-note {
-    margin-top: 6px;
-    margin-bottom: 14px;
-    font-size: 12px;
-    opacity: 0.75;
-    text-align: center;
-}
-
-.barcode-img {
-    width: 100%;
-    max-width: 260px;
-    height: auto;
-    margin: 14px auto 4px;
-    display: block;
-    object-fit: contain;
-}
-
-#barcode {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#barcode-id {
-    font-family: 'Roboto Mono', monospace;
-    font-size: 12px;
-    opacity: 0.85;
-    text-align: center;
-    display: block;
-    margin-top: 6px;
-}
-
-.credits-line {
-    font-size: 12px;
-    text-align: center;
-    margin-top: 4px;
-}
-
-.gst-row {
-    margin-bottom: 14px;
-}
-
-.receipt-header {
-    margin-top: 0;
-    margin-bottom: 2px;
-    font-family: 'Roboto Mono', monospace;
-    color: #000;
-}
-
-.receipt-meta {
-    margin-top: 8px;
-    margin-bottom: 10px;
-    font-family: 'Roboto Mono', monospace;
-    color: #000;
-}
-
-.receipt-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
-    font-size: 13px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-}
-
-.receipt-row .left {
-    flex: 1;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    min-width: 0;
-}
-
-.receipt-row .right {
-    flex: 0 0 auto;
-    text-align: right;
-    white-space: nowrap;
-    padding-left: 10px;
-}
-
-.eftpos-block {
-    margin-top: 0;
-    margin-bottom: 8px;
-    width: 100%;
-    font-family: 'Roboto Mono', monospace;
-    color: #000;
-    padding-top: 0;
-}
-
-.eft-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
-    font-size: 13px;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-}
-
-.eft-left {
-    flex: 1;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    min-width: 0;
-}
-
-.eft-right {
-    flex: 0 0 auto;
-    text-align: right;
-    white-space: nowrap;
-    padding-left: 12px;
-}
-
-.eft-full {
-    width: 100%;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-top: 2px;
-    white-space: nowrap;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Tax Invoice Receipt</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #dcdcdc; font-family: 'Roboto Mono', monospace; margin: 0; display: flex; justify-content: center; min-height: 100vh; color: #000; padding: 10px; }
+        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 15px 20px 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; overflow: hidden; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin: -15px -20px 20px -20px; border-bottom: 2px solid #dcdcdc; background: #fff; position: sticky; top: 0; z-index: 100; }
+        .header-icon { width: 26px; height: 26px; object-fit: contain; display: block; }
+        .logo { font-size: 38px; font-weight: 700; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -2px; }
+        .flex { display: flex; justify-content: space-between; gap: 10px; }
+        
+        /* Force receipt font family globally and handle long strings */
+        .line, .receipt div, .receipt span { font-family: 'Roboto Mono', monospace; word-break: break-all; }
+        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; font-weight: 400; }
+        
+        .hr { border-bottom: 2px solid #000; margin: 10px 0; }
+        .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
+        .bold { font-weight: 700; }
+        .text-center { text-align: center; }
+        
+        /* Star line overflow containment */
+        .star-line { font-size: 11px; letter-spacing: -1px; text-align: center; overflow: hidden; white-space: nowrap; margin: 4px 0; }
+        
+        .barcode-container { text-align: center; margin-top: 20px; margin-bottom: 10px; }
+        .barcode-img { width: 100%; max-width: 250px; height: auto; object-fit: contain; display: block; margin: 0 auto; }
+        @media (max-width: 400px) { body { padding: 0; background: #fff; } .receipt { box-shadow: none; max-width: 100%; } }
+    </style>
 </head>
-
 <body>
 <div class="receipt">
-
     <div class="header-bar">
-        <img src="Share.png" class="header-icon">
-        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
-        <img src="Close.png" class="header-icon">
+        <img src="Share.png" alt="Share" class="header-icon">
+        <span style="font-weight:700; font-size: 16px;">Digital Receipt</span>
+        <img src="Close.png" alt="Close" class="header-icon">
     </div>
-
-    <div class="header-top">
-        <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-        <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-    </div>
-
+    
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
     <div class="logo">coles</div>
-
-    <div class="header-block">
-        <div class="line">Store: 575 - Malvern</div>
-        <div class="line">Store Manager: Vikas</div>
-        <div class="line">Phone: (03) 9508 0200</div>
-        <div class="line">Served By: Assisted Checkout</div>
-
-        <div class="flex line">
-            <span>Register: 124</span>
-            <span>Receipt: 5808</span>
-        </div>
-
-        <div class="flex line">
-            <span>Date: <span id="cur-date"></span></span>
-            <span>Time: <span id="cur-time"></span></span>
-        </div>
-    </div>
-
+    
+    <div class="line">Store: 7723 - CS SSC</div>
+    <div class="line">Store Manager: Alan Yee</div>
+    <div class="line">Phone: (03) 9922 4300</div>
+    <div class="line">Served By: Assisted Checkout</div>
+    <div class="flex line"><span>Register: 111</span><span>Receipt: 493021</span></div>
+    <div class="flex line"><span>Date: <span id="cur-date"></span></span><span>Time: <span id="cur-time"></span></span></div>
+    
     <div class="hr"></div>
-
-    <div class="flex line" style="font-weight:700;">
-        <span>Description</span>
-        <span>$</span>
-    </div>
-
+    <div class="flex line bold"><span>Description</span><span>$</span></div>
     <div class="hr-dashed"></div>
-
-    <div id="items-box">Loading...</div>
-
+    
+    <div id="items-box">Loading items...</div>
+    
     <div class="hr-dashed"></div>
-
-    <div class="flex line totals-total">
-        <span>Total for <span id="item-count">0</span> items:</span>
-        <span id="total-amount">$0.00</span>
+    <div class="flex line bold"><span id="item-count-label">Total items:</span><span id="total-amount">$0.00</span></div>
+    <br>
+    <div class="flex line"><span>EFT</span><span id="eft-amount">$0.00</span></div>
+    <div class="flex line bold"><span>GST INCLUDED IN TOTAL</span><span id="gst-amount">$0.00</span></div>
+    
+    <div class="hr-dashed" style="margin: 15px 0;"></div>
+    
+    <!-- Card Payment & Merchant Transaction Metadata -->
+    <div class="flex line"><span>Coles</span><span>VIC AU</span></div>
+    <div class="flex line"><span><span id="cur-date2"></span> <span id="cur-time2"></span></span><span>39832829 &nbsp; NG23B1</span></div>
+    <div class="flex line"><span>***** 5106</span><span>VISA</span></div>
+    <div class="flex line"><span>CREDIT ACCOUNT</span><span>Visa Debit</span></div>
+    <div class="flex line"><span>APSN 0000 &nbsp; ATC 0076</span><span>A0000000031010</span></div>
+    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">AUD$ 31.90</span></div>
+    <div class="line">RRN 001240580802 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line">AUTH 841622</div>
+    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+    
+    <div class="hr-dashed" style="margin: 15px 0;"></div>
+    
+    <div class="line text-center">% = Taxable items</div>
+    <div class="star-line">************************************************</div>
+    <div class="flex line bold" style="font-size: 14px;"><span>Total Savings</span><span id="total-savings">$4.70</span></div>
+    <div class="star-line">************************************************</div>
+    <div class="line text-center" style="font-size: 11px; color: #444;">Total Savings include any Promotional and Loyalty Discounts.</div>
+    <br>
+    <div class="line text-center">Flybuys Card NO: 27930284920194</div>
+    <div class="line text-center">Flybuys points as of yesterday: 1,454</div>
+    
+    <div class="barcode-container">
+        <img src="barcode.png" class="barcode-img" alt="Barcode">
     </div>
-
-    <div class="flex line">
-        <span>EFT</span>
-        <span id="eft-amount">$0.00</span>
-    </div>
-
-    <div class="flex line gst-row" style="margin-bottom:14px;">
-        <span>GST INCLUDED IN TOTAL</span>
-        <span id="gst-total-amount">$0.00</span>
-    </div>
-
-    <div class="receipt-header">
-        <div class="receipt-row header-row">
-            <span class="left">Coles</span>
-            <span class="right">VIC AU</span>
-        </div>
-
-        <div class="receipt-row header-row">
-            <span class="left" id="eft-date-time"></span>
-            <span class="right">35695913   N575C4</span>
-        </div>
-    </div>
-
-    <div class="eftpos-block">
-        <div class="eft-row">
-            <span class="eft-left">**** <span id="card-last4">1728</span></span>
-            <span class="eft-right">VISA</span>
-        </div>
-
-        <div class="eft-row">
-            <span class="eft-left">CREDIT ACCOUNT</span>
-            <span class="eft-right">Visa Debit</span>
-        </div>
-
-        <div class="eft-row">
-            <span class="eft-left">APSN 0000   ATC 0076</span>
-            <span class="eft-right">A0000000031010</span>
-        </div>
-
-        <div class="eft-row">
-            <span class="eft-left">PURCHASE</span>
-            <span class="eft-right" id="eft-purchase-line">AUD$ 0.00</span>
-        </div>
-
-        <div class="eft-row">
-            <span class="eft-left">RRN 001240580802</span>
-            <span class="eft-right">(00)APPROVED</span>
-        </div>
-
-        <div class="eft-row">
-            <span class="eft-left">AUTH 841622</span>
-            <span class="eft-right"></span>
-        </div>
-
-        <div class="eft-full">NO PIN OR SIGNATURE REQUIRED</div>
-    </div>
-
-    <div class="hr-dashed" style="margin:20px 0;"></div>
-
-    <div class="taxable-banner">% = Taxable items</div>
-
-    <div id="savings-block" style="display:none;">
-        <div class="savings-stars">**************************************</div>
-        <div class="savings-line">
-            <span>Total Savings</span>
-            <span id="savings-amount">$0.00</span>
-        </div>
-        <div class="savings-stars">**************************************</div>
-        <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
-    </div>
-
-    <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
-    <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
-
-    <img id="barcode" class="barcode-img" alt="Barcode">
-    <span id="barcode-id"></span>
-
-    <div class="line credits-line" id="credits-line">Credits earned this visit: 0</div>
-
+    <div class="line text-center" style="font-size: 11px;">1786699403397683</div>
+    <div class="line text-center">Credits earned this visit: 1</div>
 </div>
 
 <script>
-function updateTimestamp() {
-    const now = new Date();
-    const d = now.toLocaleDateString('en-AU');
-    const t = now.toLocaleTimeString('en-AU', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    });
-
-    document.getElementById('cur-date').innerText = d;
-    document.getElementById('cur-time').innerText = t;
-    document.getElementById('eft-date-time').innerText = `${d} ${t}`;
-}
-updateTimestamp();
-setInterval(updateTimestamp, 1000);
-
-/* Barcode with cache-buster */
-function generateBarcode() {
-    let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
-    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF&v=${Date.now()}`;
-    document.getElementById('barcode').src = url;
-}
-generateBarcode();
-
-/* Long transaction ID */
-function generateBarcodeID() {
-    let id = Date.now().toString() + Math.floor(Math.random() * 1000);
-    document.getElementById('barcode-id').innerText = id;
-}
-generateBarcodeID();
-
-/* Random last 4 card digits */
-function generateCardLast4() {
-    let n = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    document.getElementById('card-last4').innerText = n;
-}
-generateCardLast4();
-
-/* Format unit price */
-function formatUnitPrice(value) {
-    let s = value.toFixed(2);
-    if (s.endsWith("00")) s = s.slice(0, -3);
-    else if (s.endsWith("0")) s = s.slice(0, -1);
-    return s;
-}
-
-/* Load items + offers + savings + GST */
-async function loadData() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
-
-    try {
-        const res = await fetch(API_URL + '?v=' + Date.now());
-        const data = await res.json();
-
-        let container = document.getElementById('items-box');
-        container.innerHTML = "";
-
-        let total = 0;
-        let totalSavings = 0;
-        let itemCount = 0;
-        let taxableTotal = 0;
-
-        data.forEach(item => {
-            const name = item.name;
-            const unitPrice = Number(item.price);
-            const quantity = Number(item.quantity ?? 1);
-            const code = item.code;
-            const offerQty = Number(item.offerQty ?? 0);
-            const offerTotal = Number(item.offerTotal ?? 0);
-            const taxable = ["true","TRUE","1",1,true].includes(item.taxable);
-
-            const lineTotal = unitPrice * quantity;
-            total += lineTotal;
-            itemCount += quantity;
-
-            if (taxable) taxableTotal += lineTotal;
-
-            container.innerHTML += `
-                <div class="flex line">
-                    <span>${taxable ? '% ' : ''}${name}</span>
-                    <span>$${lineTotal.toFixed(2)}</span>
-                </div>
-                ${code ? `<div class="item-code">${code}</div>` : ""}
-            `;
-
-            if (quantity > 1) {
-                container.innerHTML += `
-                    <div class="line" style="padding-left:2px;">
-                        ${quantity} @ $${formatUnitPrice(unitPrice)} EACH
-                    </div>
-                `;
-            }
-
-            if (offerQty && offerTotal && quantity >= offerQty) {
-                const fullOffers = Math.floor(quantity / offerQty);
-                const normalPrice = offerQty * unitPrice * fullOffers;
-                const dealPrice = offerTotal * fullOffers;
-                const discountValue = normalPrice - dealPrice;
-
-                if (discountValue > 0) {
-                    total -= discountValue;
-                    totalSavings += discountValue;
-
-                    if (taxable) taxableTotal -= discountValue;
-
-                    container.innerHTML += `
-                        <div class="flex line discount-line">
-                            <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
-                            <span>-$${discountValue.toFixed(2)}</span>
-                        </div>
-                    `;
-                }
-            }
-        });
-
-        document.getElementById('item-count').innerText = itemCount;
-        document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
-        document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
-        document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
-        document.getElementById('eft-purchase-line').innerText = 'AUD$ ' + total.toFixed(2);
-
-        if (totalSavings > 0) {
-            document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
-            document.getElementById('savings-block').style.display = 'block';
-        }
-
-        const credits = Math.floor(total / 20);
-        document.getElementById('credits-line').innerText = 'Credits earned this visit: ' + credits;
-
-    } catch (e) {
-        document.getElementById('items-box').innerText = 'Error loading items';
-        document.getElementById('item-count').innerText = '0';
-        document.getElementById('total-amount').innerText = '$0.00';
-        document.getElementById('eft-amount').innerText = '$0.00';
-        document.getElementById('gst-total-amount').innerText = '$0.00';
-        document.getElementById('eft-purchase-line').innerText = 'PURCHASE   AUD$ 0.00';
-        document.getElementById('credits-line').innerText = 'Credits earned this visit: 0';
+    function updateTimestamp() {
+        const now = new Date();
+        const d = now.toLocaleDateString('en-AU');
+        const dS = now.toLocaleDateString('en-AU', {day:'2-digit', month:'2-digit', year:'2-digit'});
+        const t = now.toLocaleTimeString('en-AU', {hour: '2-digit', minute:'2-digit', hour12: false});
+        document.getElementById('cur-date').innerText = d;
+        document.getElementById('cur-date2').innerText = dS;
+        document.getElementById('cur-time').innerText = t;
+        document.getElementById('cur-time2').innerText = t;
     }
-}
+    updateTimestamp();
+    setInterval(updateTimestamp, 1000);
 
-loadData();
+    async function loadData() {
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            let total = 0, container = document.getElementById('items-box');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                total += item.price;
+                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${item.price.toFixed(2)}</span></div>`;
+            });
+            
+            document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+            document.getElementById('card-total').innerText = 'AUD$ ' + total.toFixed(2);
+            document.getElementById('item-count-label').innerText = `Total for ${data.length} item${data.length === 1 ? '' : 's'}:`;
+        } catch(e) { 
+            document.getElementById('items-box').innerHTML = 'Error loading items'; 
+        }
+    }
+    loadData();
 </script>
-
-<!-- Kill any rogue service workers -->
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-        regs.forEach(reg => reg.unregister());
-    });
-}
-</script>
-
 </body>
 </html>
